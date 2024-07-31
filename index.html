@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Facebook Login Example</title>
+</head>
+<body>
+  <!-- Facebook Login Button -->
+  <fb:login-button 
+    scope="public_profile,email" 
+    onlogin="checkLoginState();">
+  </fb:login-button>
+
+  <!-- Display User Information -->
+  <div id="status"></div>
+
+  <!-- Include the Facebook JavaScript SDK -->
+  <script>
+    window.fbAsyncInit = function() {
+      FB.init({
+        appId     : '1025142985660560', // Replace with your Facebook app ID
+        cookie     : true, // Enable cookies to allow the server to access the session
+        xfbml      : true, // Parse social plugins on this webpage
+        version    : 'v20.0' // Use this Graph API version
+      });
+      
+      FB.AppEvents.logPageView();   
+    };
+
+    // Load the SDK asynchronously
+    (function(d, s, id){
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) {return;}
+      js = d.createElement(s); js.id = id;
+      js.src = "https://connect.facebook.net/en_US/sdk.js";
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+
+    // Check login state and handle response
+    function checkLoginState() {
+      FB.getLoginStatus(function(response) {
+        statusChangeCallback(response);
+      });
+    }
+
+    // Handle the response from Facebook
+    function statusChangeCallback(response) {
+      console.log('Facebook login status:', response);
+      if (response.status === 'connected') {
+        // Logged into your webpage and Facebook.
+        fetchUserProfile();
+      } else {
+        // Not logged into your webpage or unable to tell.
+        document.getElementById('status').innerHTML = 'Please log into this webpage.';
+      }
+    }
+
+    // Fetch the user's profile information
+    function fetchUserProfile() {
+      FB.api('/me', {fields: 'name,email'}, function(response) {
+        console.log('Successful login for: ' + response.name);
+        document.getElementById('status').innerHTML =
+          'Thanks for logging in, ' + response.name + '!';
+      });
+    }
+  </script>
+</body>
+</html>
