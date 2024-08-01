@@ -44,6 +44,7 @@ function statusChangeCallback(response) {
   if (response.status === 'connected') {
     // Logged into your app and Facebook.
     document.getElementById('status').innerHTML ='connected';
+    console.log(response);
     // getPSID(response.authResponse.accessToken);
   } else {
     // The person is not logged into your app or we are unable to tell.
