@@ -1,67 +1,54 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Facebook Login</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
 </head>
 <body>
-  <script>
-    window.fbAsyncInit = function() {
-      FB.init({
-        appId      : '1025142985660560',
-        cookie     : true,
-        xfbml      : true,
-        version    : 'v12.0'
-      });
-      FB.AppEvents.logPageView();   
-    };
-
-    (function(d, s, id){
-      var js, fjs = d.getElementsByTagName(s)[0];
-      if (d.getElementById(id)) {return;}
-      js = d.createElement(s); js.id = id;
-      js.src = "https://connect.facebook.net/en_US/sdk.js";
-      fjs.parentNode.insertBefore(js, fjs);
-    }(document, 'script', 'facebook-jssdk'));
-  </script>
-
   <fb:login-button 
-    scope="public_profile,email"
-    onlogin="checkLoginState();">
-  </fb:login-button>
+  config_id="504313615295038"
+  onlogin="checkLoginState();">
+</fb:login-button>
+<script>
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId      : '1025142985660560',
+      cookie     : true,
+      xfbml      : true,
+      version    : 'v20.0'
+    });
+      
+    FB.AppEvents.logPageView();   
 
-  <div id="status"></div>
+    
+      
+  };
 
-  <script>
-    function checkLoginState() {
+  (function(d, s, id){
+     var js, fjs = d.getElementsByTagName(s)[0];
+     if (d.getElementById(id)) {return;}
+     js = d.createElement(s); js.id = id;
+     js.src = "https://connect.facebook.net/en_US/sdk.js";
+     fjs.parentNode.insertBefore(js, fjs);
+   }(document, 'script', 'facebook-jssdk'));
+  
+   function checkLoginState() {
       FB.getLoginStatus(function(response) {
         statusChangeCallback(response);
       });
     }
 
-    function statusChangeCallback(response) {
-      if (response.status === 'connected') {
-        // Logged into your app and Facebook.
-        getPSID(response.authResponse.accessToken);
-      } else {
-        // The person is not logged into your app or we are unable to tell.
-        document.getElementById('status').innerHTML = 'Please log into this app.';
-      }
-    }
-
-    function getPSID(accessToken) {
-      fetch('/get-psid', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ accessToken: accessToken })
-      })
-      .then(response => response.json())
-      .then(data => {
-        document.getElementById('status').innerHTML = 'PSID: ' + data.psid;
-      })
-      .catch(error => console.error('Error:', error));
-    }
-  </script>
+function statusChangeCallback(response) {
+  if (response.status === 'connected') {
+    // Logged into your app and Facebook.
+    document.getElementById('status').innerHTML ='connected';
+    // getPSID(response.authResponse.accessToken);
+  } else {
+    // The person is not logged into your app or we are unable to tell.
+    document.getElementById('status').innerHTML = 'Please log into this app.';
+  }
+}
+</script>
 </body>
 </html>
