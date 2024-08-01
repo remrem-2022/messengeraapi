@@ -1,34 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Facebook Login Example</title>
+  <title>Facebook Login</title>
 </head>
 <body>
-  <!-- Facebook Login Button -->
-  <fb:login-button 
-    scope="public_profile,email" 
-    onlogin="checkLoginState();">
-  </fb:login-button>
-
-  <!-- Display User Information -->
-  <div id="status"></div>
-
-  <!-- Include the Facebook JavaScript SDK -->
   <script>
     window.fbAsyncInit = function() {
       FB.init({
-        appId     : '1025142985660560', // Replace with your Facebook app ID
-        cookie     : true, // Enable cookies to allow the server to access the session
-        xfbml      : true, // Parse social plugins on this webpage
-        version    : 'v20.0' // Use this Graph API version
+        appId      : '1025142985660560',
+        cookie     : true,
+        xfbml      : true,
+        version    : 'v12.0'
       });
-      
       FB.AppEvents.logPageView();   
     };
 
-    // Load the SDK asynchronously
     (function(d, s, id){
       var js, fjs = d.getElementsByTagName(s)[0];
       if (d.getElementById(id)) {return;}
@@ -36,33 +22,45 @@
       js.src = "https://connect.facebook.net/en_US/sdk.js";
       fjs.parentNode.insertBefore(js, fjs);
     }(document, 'script', 'facebook-jssdk'));
+  </script>
 
-    // Check login state and handle response
+  <fb:login-button 
+    scope="public_profile,email"
+    onlogin="checkLoginState();">
+  </fb:login-button>
+
+  <div id="status"></div>
+
+  <script>
     function checkLoginState() {
       FB.getLoginStatus(function(response) {
         statusChangeCallback(response);
       });
     }
 
-    // Handle the response from Facebook
     function statusChangeCallback(response) {
-      console.log('Facebook login status:', response);
       if (response.status === 'connected') {
-        // Logged into your webpage and Facebook.
-        fetchUserProfile();
+        // Logged into your app and Facebook.
+        getPSID(response.authResponse.accessToken);
       } else {
-        // Not logged into your webpage or unable to tell.
-        document.getElementById('status').innerHTML = 'Please log into this webpage.';
+        // The person is not logged into your app or we are unable to tell.
+        document.getElementById('status').innerHTML = 'Please log into this app.';
       }
     }
 
-    // Fetch the user's profile information
-    function fetchUserProfile() {
-      FB.api('/me', {fields: 'name,email'}, function(response) {
-        console.log('Successful login for: ' + response.name);
-        document.getElementById('status').innerHTML =
-          'Thanks for logging in, ' + response.name + '!';
-      });
+    function getPSID(accessToken) {
+      fetch('/get-psid', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ accessToken: accessToken })
+      })
+      .then(response => response.json())
+      .then(data => {
+        document.getElementById('status').innerHTML = 'PSID: ' + data.psid;
+      })
+      .catch(error => console.error('Error:', error));
     }
   </script>
 </body>
