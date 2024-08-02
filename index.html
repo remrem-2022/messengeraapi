@@ -6,80 +6,56 @@
   <title>Document</title>
 </head>
 <body>
-  <h1 id="status"></h1>
-  <fb:login-button
-  messenger_app_id="1025142985660560"
-  page_id="368820739652464"
-  config_id="504313615295038"
-  onlogin="checkLoginState();">
-</fb:login-button>
+  <div id="fb-log" class="fb-send-to-messenger"
+      messenger_app_id="1025142985660560"
+      page_id="368820739652464"
+      config_id="504313615295038"
+      ref="6662bcba2cdca9bcf8e9ec71"
+      color="blue"
+      size="large"
+      cta_text="SEND_ME_UPDATES">
+  </div>
+   <button onclick="checkLoginState()">
+    Login FB
+  </button>
+  <script>
+       window.fbAsyncInit = function() {
+          FB.init({
+            appId      : '1025142985660560',
+            cookie     : true,
+            xfbml      : true,
+            version    : 'v20.0'
+          });
 
-<!-- <div class="fb-send-to-messenger"
-    messenger_app_id="1025142985660560"
-    page_id="368820739652464"
-    config_id="504313615295038"
-    ref="ADDITIONAL_USER_INFO"
-    color="blue"
-    size="large"
-    cta_text="SUBSCRIBE_IN_MESSENGER">
-</div> -->
-<script>
-  window.fbAsyncInit = function() {
-    FB.init({
-      appId      : '1025142985660560',
-      cookie     : true,
-      xfbml      : true,
-      version    : 'v20.0'
-    });
-      
-    FB.AppEvents.logPageView();   
+        };
 
-    
-      
-  };
+        (function(d, s, id){
+          var js, fjs = d.getElementsByTagName(s)[0];
+          if (d.getElementById(id)) {return;}
+          js = d.createElement(s); js.id = id;
+          js.src = "https://connect.facebook.net/en_US/sdk.js";
+          fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
 
-  (function(d, s, id){
-     var js, fjs = d.getElementsByTagName(s)[0];
-     if (d.getElementById(id)) {return;}
-     js = d.createElement(s); js.id = id;
-     js.src = "https://connect.facebook.net/en_US/sdk.js";
-     fjs.parentNode.insertBefore(js, fjs);
-   }(document, 'script', 'facebook-jssdk'));
-  
-   function checkLoginState() {
-      FB.getLoginStatus(function(response) {
-        statusChangeCallback(response);
-      });
-    }
+        function checkLoginState() {
+          FB.login(function(response) {
+              if (response.authResponse) {
+                  console.log('Welcome!  Fetching your information.... ');
+                  FB.api(
+                    '/me',
+                    'GET',
+                    {"fields":"id,name,email"},
+                    function(response) {
+                        document.getElementById("profile").innerHTML = "Good to see you, " + response.name
+                        idFb = response.id
+                        console.log(idFb);
 
-function statusChangeCallback(response) {
-  if (response.status === 'connected') {
-    // Logged into your app and Facebook.
-    document.getElementById('status').innerHTML ='connected';
-    console.log(response);
-    triggerpost(response.authResponse.accessToken);
-    // getPSID(response.authResponse.accessToken);
-  } else {
-    // The person is not logged into your app or we are unable to tell.
-    document.getElementById('status').innerHTML = 'Please log into this app.';
-  }
-}
-
-function triggerpost(accessToken) {
-      fetch('https://a38b-222-127-13-210.ngrok-free.app/api/webhook', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ accessToken: accessToken })
-      })
-      .then(response => response.json())
-      .then(data => {
-        console.log(data);
-        // document.getElementById('status').innerHTML = 'PSID: ' + data.psid;
-      })
-      .catch(error => console.error('Error:', error));
-    }
-</script>
+                    }
+                  );
+              } else { 
+                  console.log('User cancelled login or did not fully authorize.'); }
+          });
+        }
+  </script>
 </body>
 </html>
