@@ -46,7 +46,6 @@
                     'GET',
                     {"fields":"id,name,email"},
                     function(response) {
-                        document.getElementById("profile").innerHTML = "Good to see you, " + response.name
                         idFb = response.id
                         console.log(idFb);
 
