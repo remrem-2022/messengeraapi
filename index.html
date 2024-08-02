@@ -15,9 +15,10 @@
       size="large"
       cta_text="SEND_ME_UPDATES">
   </div>
-   <button config_id="504313615295038" onclick="checkLoginState()">
-    Login FB
-  </button>
+  <fb:login-button 
+  config_id="504313615295038"
+  onlogin="checkLoginState();">
+</fb:login-button>
   <script>
        window.fbAsyncInit = function() {
           FB.init({
@@ -47,7 +48,6 @@
                     {"fields":"id,name,email"},
                     function(response) {
                         idFb = response.id
-                        console.log(idFb);
 
                     }
                   );
